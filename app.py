@@ -172,273 +172,269 @@ def parse_ai_sections(ai_feedback):
 # =========================================================
 
 
-
 def show_home():
-
-
 
     clear_screen()
 
-
-
     main_frame = ctk.CTkFrame(
-
         app,
-
         corner_radius=0
-
     )
-
-
 
     main_frame.pack(
-
         fill="both",
-
         expand=True
-
     )
-
-
-
-
-
-    # -----------------------------------------------------
-
-    # LOGO
-
-    # -----------------------------------------------------
-
-
 
     logo = ctk.CTkLabel(
-
         main_frame,
-
         text="PhysiLearn",
-
         font=ctk.CTkFont(
-
-            size=42,
-
+            size=44,
             weight="bold"
-
         )
-
     )
-
-
 
     logo.pack(
-
-        pady=(65, 5)
-
+        pady=(45, 4)
     )
-
-
-
-
 
     subtitle = ctk.CTkLabel(
-
         main_frame,
-
-        text=(
-
-            "Learn physics through your own movement."
-
-        ),
-
+        text="Turn everyday motion into measurable physics.",
         font=ctk.CTkFont(
-
-            size=20
-
+            size=19
         )
-
     )
-
-
 
     subtitle.pack(
-
-        pady=(0, 40)
-
+        pady=(0, 28)
     )
 
-
-
-
-
-    # -----------------------------------------------------
-
-    # MAIN CARD
-
-    # -----------------------------------------------------
-
-
-
-    physics_card = ctk.CTkFrame(
-
+    mode_label = ctk.CTkLabel(
         main_frame,
+        text="CHOOSE A LAB",
+        font=ctk.CTkFont(
+            size=14,
+            weight="bold"
+        )
+    )
 
-        width=620,
+    mode_label.pack(
+        pady=(0, 10)
+    )
 
-        height=320,
+    cards_frame = ctk.CTkFrame(
+        main_frame,
+        fg_color="transparent"
+    )
 
+    cards_frame.pack(
+        pady=4
+    )
+
+    # -----------------------------------------------------
+    # BALL LAB
+    # -----------------------------------------------------
+
+    ball_card = ctk.CTkFrame(
+        cards_frame,
+        width=430,
+        height=360,
         corner_radius=25
-
     )
 
-
-
-    physics_card.pack(
-
-        pady=10
-
+    ball_card.pack(
+        side="left",
+        padx=12
     )
 
-
-
-    physics_card.pack_propagate(
-
+    ball_card.pack_propagate(
         False
-
     )
 
-
-
-
-
-    physics_title = ctk.CTkLabel(
-
-        physics_card,
-
-        text="Interactive Motion Lab",
-
+    ball_badge = ctk.CTkLabel(
+        ball_card,
+        text="OBJECT MOTION LAB",
         font=ctk.CTkFont(
-
-            size=30,
-
+            size=13,
             weight="bold"
-
         )
-
     )
 
-
-
-    physics_title.pack(
-
-        pady=(40, 10)
-
+    ball_badge.pack(
+        pady=(28, 7)
     )
 
+    ball_title = ctk.CTkLabel(
+        ball_card,
+        text="Tennis Ball Physics",
+        font=ctk.CTkFont(
+            size=27,
+            weight="bold"
+        )
+    )
 
+    ball_title.pack(
+        pady=(0, 12)
+    )
 
-
-
-    physics_description = ctk.CTkLabel(
-
-        physics_card,
-
+    ball_description = ctk.CTkLabel(
+        ball_card,
         text=(
-
-            "Turn your webcam into a motion laboratory.\n"
-
-            "Move your hand, run real experiments, and understand\n"
-
-            "position, velocity, and acceleration."
-
+            "Roll a real tennis ball and let PhysiLearn\n"
+            "estimate distance, time, speed, displacement,\n"
+            "velocity, and acceleration from your webcam."
         ),
-
         font=ctk.CTkFont(
-
-            size=17
-
+            size=15
         ),
-
         justify="center"
-
     )
 
-
-
-    physics_description.pack(
-
-        pady=15
-
+    ball_description.pack(
+        pady=(0, 15)
     )
 
-
-
-
-
-    start_button = ctk.CTkButton(
-
-        physics_card,
-
-        text="Start Learning",
-
-        command=show_challenge,
-
-        width=260,
-
-        height=55,
-
-        corner_radius=15,
-
+    ball_learning = ctk.CTkLabel(
+        ball_card,
+        text=(
+            "Then solve a physics problem using\n"
+            "measurements from your own experiment."
+        ),
         font=ctk.CTkFont(
+            size=14
+        ),
+        justify="center"
+    )
 
-            size=18,
+    ball_learning.pack(
+        pady=(0, 18)
+    )
 
+    ball_button = ctk.CTkButton(
+        ball_card,
+        text="Open Ball Lab",
+        command=show_ball_challenge,
+        width=250,
+        height=52,
+        corner_radius=15,
+        font=ctk.CTkFont(
+            size=17,
             weight="bold"
-
         )
-
     )
 
+    ball_button.pack()
 
+    # -----------------------------------------------------
+    # HAND LAB
+    # -----------------------------------------------------
 
-    start_button.pack(
-
-        pady=25
-
+    hand_card = ctk.CTkFrame(
+        cards_frame,
+        width=430,
+        height=360,
+        corner_radius=25
     )
 
+    hand_card.pack(
+        side="left",
+        padx=12
+    )
 
+    hand_card.pack_propagate(
+        False
+    )
 
+    hand_badge = ctk.CTkLabel(
+        hand_card,
+        text="MOTION CHALLENGE",
+        font=ctk.CTkFont(
+            size=13,
+            weight="bold"
+        )
+    )
 
+    hand_badge.pack(
+        pady=(28, 7)
+    )
+
+    hand_title = ctk.CTkLabel(
+        hand_card,
+        text="Constant Velocity",
+        font=ctk.CTkFont(
+            size=27,
+            weight="bold"
+        )
+    )
+
+    hand_title.pack(
+        pady=(0, 12)
+    )
+
+    hand_description = ctk.CTkLabel(
+        hand_card,
+        text=(
+            "Move your hand from left to right while\n"
+            "PhysiLearn measures direction, velocity\n"
+            "variation, and acceleration."
+        ),
+        font=ctk.CTkFont(
+            size=15
+        ),
+        justify="center"
+    )
+
+    hand_description.pack(
+        pady=(0, 15)
+    )
+
+    hand_learning = ctk.CTkLabel(
+        hand_card,
+        text=(
+            "A rule-based evaluator grades the motion,\n"
+            "then the AI Physics Tutor explains it."
+        ),
+        font=ctk.CTkFont(
+            size=14
+        ),
+        justify="center"
+    )
+
+    hand_learning.pack(
+        pady=(0, 18)
+    )
+
+    hand_button = ctk.CTkButton(
+        hand_card,
+        text="Open Hand Challenge",
+        command=show_challenge,
+        width=250,
+        height=52,
+        corner_radius=15,
+        font=ctk.CTkFont(
+            size=17,
+            weight="bold"
+        )
+    )
+
+    hand_button.pack()
 
     footer = ctk.CTkLabel(
-
         main_frame,
-
         text=(
-
             "Computer Vision  •  Physics  •  "
-
             "AI-Powered Learning"
-
         ),
-
         font=ctk.CTkFont(
-
-            size=14
-
+            size=13
         )
-
     )
-
-
 
     footer.pack(
-
-        pady=25
-
+        pady=22
     )
-
-
-
 
 
 # =========================================================
@@ -2050,6 +2046,925 @@ def show_results(
     home_button.pack(
         side="left",
         padx=10
+    )
+
+
+# =========================================================
+
+# BALL PHYSICS LAB
+
+# =========================================================
+
+
+def show_ball_challenge():
+
+    clear_screen()
+
+    frame = ctk.CTkFrame(
+        app,
+        corner_radius=0
+    )
+
+    frame.pack(
+        fill="both",
+        expand=True
+    )
+
+    back_button = ctk.CTkButton(
+        frame,
+        text="<  Back",
+        command=show_home,
+        width=100,
+        height=40,
+        corner_radius=12
+    )
+
+    back_button.place(
+        x=30,
+        y=30
+    )
+
+    lab_label = ctk.CTkLabel(
+        frame,
+        text="BALL PHYSICS LAB",
+        font=ctk.CTkFont(
+            size=14,
+            weight="bold"
+        )
+    )
+
+    lab_label.pack(
+        pady=(35, 5)
+    )
+
+    title = ctk.CTkLabel(
+        frame,
+        text="Measure a Rolling Tennis Ball",
+        font=ctk.CTkFont(
+            size=34,
+            weight="bold"
+        )
+    )
+
+    title.pack(
+        pady=(0, 5)
+    )
+
+    subtitle = ctk.CTkLabel(
+        frame,
+        text="Create a physics problem from your own real-world motion.",
+        font=ctk.CTkFont(
+            size=17
+        )
+    )
+
+    subtitle.pack(
+        pady=(0, 15)
+    )
+
+    card = ctk.CTkFrame(
+        frame,
+        width=760,
+        height=430,
+        corner_radius=25
+    )
+
+    card.pack(
+        pady=5
+    )
+
+    card.pack_propagate(
+        False
+    )
+
+    mission_title = ctk.CTkLabel(
+        card,
+        text="YOUR MISSION",
+        font=ctk.CTkFont(
+            size=20,
+            weight="bold"
+        )
+    )
+
+    mission_title.pack(
+        pady=(25, 6)
+    )
+
+    mission_text = ctk.CTkLabel(
+        card,
+        text=(
+            "Roll a tennis ball from left to right across a table.\n"
+            "Keep the ball roughly the same distance from the webcam."
+        ),
+        font=ctk.CTkFont(
+            size=17
+        ),
+        justify="center"
+    )
+
+    mission_text.pack(
+        pady=(0, 15)
+    )
+
+    measures_title = ctk.CTkLabel(
+        card,
+        text="PHYSILEARN WILL ESTIMATE",
+        font=ctk.CTkFont(
+            size=15,
+            weight="bold"
+        )
+    )
+
+    measures_title.pack(
+        pady=(0, 5)
+    )
+
+    measures = ctk.CTkLabel(
+        card,
+        text=(
+            "Distance  •  Time  •  Displacement  •  "
+            "Speed  •  Velocity  •  Acceleration"
+        ),
+        font=ctk.CTkFont(
+            size=15
+        )
+    )
+
+    measures.pack(
+        pady=(0, 15)
+    )
+
+    how_title = ctk.CTkLabel(
+        card,
+        text="HOW IT WORKS",
+        font=ctk.CTkFont(
+            size=15,
+            weight="bold"
+        )
+    )
+
+    how_title.pack(
+        pady=(0, 5)
+    )
+
+    instructions = ctk.CTkLabel(
+        card,
+        text=(
+            "1. Hold the tennis ball still during calibration.\n"
+            "2. Get ready during the 3-second countdown.\n"
+            "3. Roll the ball left-to-right while recording.\n"
+            "4. Close the graph windows after viewing them.\n"
+            "5. Use your measured distance and time to calculate average speed."
+        ),
+        font=ctk.CTkFont(
+            size=15
+        ),
+        justify="left"
+    )
+
+    instructions.pack(
+        pady=(0, 18)
+    )
+
+    accuracy_note = ctk.CTkLabel(
+        card,
+        text=(
+            "Measurements are estimated from webcam calibration using "
+            "the tennis ball's known diameter."
+        ),
+        font=ctk.CTkFont(
+            size=12
+        ),
+        wraplength=650
+    )
+
+    accuracy_note.pack(
+        pady=(0, 15)
+    )
+
+    start_button = ctk.CTkButton(
+        card,
+        text="Start Ball Experiment",
+        command=start_ball_experiment,
+        width=300,
+        height=55,
+        corner_radius=16,
+        font=ctk.CTkFont(
+            size=18,
+            weight="bold"
+        )
+    )
+
+    start_button.pack()
+
+
+def start_ball_experiment():
+
+    clear_screen()
+
+    loading_frame = ctk.CTkFrame(
+        app,
+        corner_radius=0
+    )
+
+    loading_frame.pack(
+        fill="both",
+        expand=True
+    )
+
+    title = ctk.CTkLabel(
+        loading_frame,
+        text="Ball Experiment Running",
+        font=ctk.CTkFont(
+            size=38,
+            weight="bold"
+        )
+    )
+
+    title.pack(
+        pady=(160, 15)
+    )
+
+    message = ctk.CTkLabel(
+        loading_frame,
+        text=(
+            "Use the webcam window to complete the experiment.\n\n"
+            "Hold the ball still during calibration, then roll it\n"
+            "from left to right when recording begins.\n\n"
+            "After recording, view and close the graph windows."
+        ),
+        font=ctk.CTkFont(
+            size=18
+        ),
+        justify="center"
+    )
+
+    message.pack(
+        pady=20
+    )
+
+    progress = ctk.CTkProgressBar(
+        loading_frame,
+        width=350,
+        mode="indeterminate"
+    )
+
+    progress.pack(
+        pady=25
+    )
+
+    progress.start()
+
+    thread = threading.Thread(
+        target=run_ball_experiment,
+        daemon=True
+    )
+
+    thread.start()
+
+
+def run_ball_experiment():
+
+    script_path = project_file(
+        "ball_physics_test.py"
+    )
+
+    project_dir = os.path.dirname(
+        script_path
+    )
+
+    result_path = project_file(
+        "ball_experiment_result.json"
+    )
+
+    if os.path.exists(
+        result_path
+    ):
+
+        try:
+            os.remove(
+                result_path
+            )
+
+        except OSError:
+            pass
+
+    try:
+
+        completed = subprocess.run(
+            [
+                sys.executable,
+                script_path
+            ],
+            cwd=project_dir
+        )
+
+        if completed.returncode != 0:
+            raise RuntimeError(
+                "The ball experiment ended before a result was created."
+            )
+
+        app.after(
+            0,
+            load_ball_experiment_result
+        )
+
+    except Exception as error:
+
+        print(
+            f"Ball experiment error: {error}"
+        )
+
+        app.after(
+            0,
+            lambda: show_ball_error(
+                str(error)
+            )
+        )
+
+
+def load_ball_experiment_result():
+
+    result_path = project_file(
+        "ball_experiment_result.json"
+    )
+
+    if not os.path.exists(
+        result_path
+    ):
+
+        show_ball_error(
+            "No ball experiment result was found. "
+            "Try the experiment again and keep the ball visible."
+        )
+
+        return
+
+    try:
+
+        with open(
+            result_path,
+            "r",
+            encoding="utf-8"
+        ) as file:
+
+            result_data = json.load(
+                file
+            )
+
+        show_ball_learning(
+            result_data
+        )
+
+    except Exception as error:
+
+        show_ball_error(
+            str(error)
+        )
+
+
+def show_ball_learning(
+    result_data
+):
+
+    clear_screen()
+
+    try:
+        distance = float(
+            result_data["distance_traveled"]
+        )
+        displacement = float(
+            result_data["horizontal_displacement"]
+        )
+        motion_time = float(
+            result_data["motion_time"]
+        )
+        average_speed = float(
+            result_data["average_speed"]
+        )
+        average_velocity = float(
+            result_data["average_velocity"]
+        )
+        size_variation = float(
+            result_data.get(
+                "ball_size_variation_percent",
+                0.0
+            )
+        )
+
+    except (KeyError, TypeError, ValueError) as error:
+        show_ball_error(
+            f"Ball result data was incomplete: {error}"
+        )
+        return
+
+    page = ctk.CTkFrame(
+        app,
+        corner_radius=0
+    )
+
+    page.pack(
+        fill="both",
+        expand=True
+    )
+
+    title = ctk.CTkLabel(
+        page,
+        text="Your Ball Experiment",
+        font=ctk.CTkFont(
+            size=34,
+            weight="bold"
+        )
+    )
+
+    title.pack(
+        pady=(22, 3)
+    )
+
+    subtitle = ctk.CTkLabel(
+        page,
+        text=(
+            "PhysiLearn measured the motion. Now use physics to analyze it."
+        ),
+        font=ctk.CTkFont(
+            size=16
+        )
+    )
+
+    subtitle.pack(
+        pady=(0, 14)
+    )
+
+    measurements_card = ctk.CTkFrame(
+        page,
+        width=900,
+        height=155,
+        corner_radius=22
+    )
+
+    measurements_card.pack(
+        pady=4
+    )
+
+    measurements_card.pack_propagate(
+        False
+    )
+
+    measured_title = ctk.CTkLabel(
+        measurements_card,
+        text="MEASURED BY PHYSILEARN",
+        font=ctk.CTkFont(
+            size=15,
+            weight="bold"
+        )
+    )
+
+    measured_title.pack(
+        pady=(16, 9)
+    )
+
+    metrics_frame = ctk.CTkFrame(
+        measurements_card,
+        fg_color="transparent"
+    )
+
+    metrics_frame.pack()
+
+    metric_values = [
+        (
+            "DISTANCE",
+            f"{distance:.3f} m"
+        ),
+        (
+            "TIME",
+            f"{motion_time:.3f} s"
+        ),
+        (
+            "DISPLACEMENT",
+            f"{displacement:+.3f} m"
+        ),
+    ]
+
+    for metric_name, metric_value in metric_values:
+
+        metric_card = ctk.CTkFrame(
+            metrics_frame,
+            width=245,
+            height=78,
+            corner_radius=15
+        )
+
+        metric_card.pack(
+            side="left",
+            padx=8
+        )
+
+        metric_card.pack_propagate(
+            False
+        )
+
+        ctk.CTkLabel(
+            metric_card,
+            text=metric_name,
+            font=ctk.CTkFont(
+                size=12,
+                weight="bold"
+            )
+        ).pack(
+            pady=(9, 1)
+        )
+
+        ctk.CTkLabel(
+            metric_card,
+            text=metric_value,
+            font=ctk.CTkFont(
+                size=22,
+                weight="bold"
+            )
+        ).pack()
+
+    challenge_card = ctk.CTkFrame(
+        page,
+        width=900,
+        height=405,
+        corner_radius=22
+    )
+
+    challenge_card.pack(
+        pady=14
+    )
+
+    challenge_card.pack_propagate(
+        False
+    )
+
+    challenge_title = ctk.CTkLabel(
+        challenge_card,
+        text="CAN YOU CALCULATE THE AVERAGE SPEED?",
+        font=ctk.CTkFont(
+            size=19,
+            weight="bold"
+        )
+    )
+
+    challenge_title.pack(
+        pady=(20, 4)
+    )
+
+    question = ctk.CTkLabel(
+        challenge_card,
+        text=(
+            "Use the distance and time measured from your own experiment."
+        ),
+        font=ctk.CTkFont(
+            size=14
+        )
+    )
+
+    question.pack(
+        pady=(0, 8)
+    )
+
+    formula = ctk.CTkLabel(
+        challenge_card,
+        text="v = d / t",
+        font=ctk.CTkFont(
+            size=28,
+            weight="bold"
+        )
+    )
+
+    formula.pack(
+        pady=(0, 12)
+    )
+
+    answer_frame = ctk.CTkFrame(
+        challenge_card,
+        fg_color="transparent"
+    )
+
+    answer_frame.pack()
+
+    answer_entry = ctk.CTkEntry(
+        answer_frame,
+        width=230,
+        height=46,
+        placeholder_text="Enter average speed",
+        justify="center",
+        font=ctk.CTkFont(
+            size=16
+        )
+    )
+
+    answer_entry.pack(
+        side="left",
+        padx=(0, 9)
+    )
+
+    ctk.CTkLabel(
+        answer_frame,
+        text="m/s",
+        font=ctk.CTkFont(
+            size=16,
+            weight="bold"
+        )
+    ).pack(
+        side="left"
+    )
+
+    feedback_label = ctk.CTkLabel(
+        challenge_card,
+        text="",
+        font=ctk.CTkFont(
+            size=14
+        ),
+        wraplength=760,
+        justify="center"
+    )
+
+    feedback_label.pack(
+        pady=(12, 2)
+    )
+
+    solution_label = ctk.CTkLabel(
+        challenge_card,
+        text="",
+        font=ctk.CTkFont(
+            size=14
+        ),
+        wraplength=760,
+        justify="center"
+    )
+
+    solution_label.pack(
+        pady=(0, 4)
+    )
+
+    hint_label = ctk.CTkLabel(
+        challenge_card,
+        text="",
+        font=ctk.CTkFont(
+            size=13
+        ),
+        wraplength=760,
+        justify="center"
+    )
+
+    hint_label.pack(
+        pady=(0, 4)
+    )
+
+    attempts = {
+        "count": 0
+    }
+
+    def show_hint():
+        hint_label.configure(
+            text=(
+                "Hint: average speed = total distance ÷ total time. "
+                f"Use {distance:.3f} ÷ {motion_time:.3f}."
+            )
+        )
+
+    def check_answer():
+
+        raw_answer = (
+            answer_entry.get()
+            .strip()
+            .replace(",", ".")
+        )
+
+        try:
+            student_answer = float(
+                raw_answer
+            )
+
+        except ValueError:
+            feedback_label.configure(
+                text="Enter a number, for example 0.14."
+            )
+            solution_label.configure(
+                text=""
+            )
+            return
+
+        attempts["count"] += 1
+
+        tolerance = max(
+            0.01,
+            average_speed * 0.08
+        )
+
+        difference = abs(
+            student_answer
+            - average_speed
+        )
+
+        if difference <= tolerance:
+
+            feedback_label.configure(
+                text=(
+                    "Correct! You calculated the speed using "
+                    "measurements from your own experiment."
+                )
+            )
+
+            solution_label.configure(
+                text=(
+                    f"v = d / t   →   "
+                    f"{distance:.3f} / {motion_time:.3f} "
+                    f"≈ {average_speed:.3f} m/s\n"
+                    f"Average velocity was {average_velocity:+.3f} m/s. "
+                    "Speed uses total distance; velocity also includes direction."
+                )
+            )
+
+            hint_label.configure(
+                text=(
+                    f"Camera calibration quality: ball-size variation "
+                    f"{size_variation:.1f}%. Measurements are estimates."
+                )
+            )
+
+        else:
+
+            feedback_label.configure(
+                text=(
+                    "Not quite. Average speed uses total distance divided by time."
+                )
+            )
+
+            solution_label.configure(
+                text=""
+            )
+
+            if attempts["count"] >= 2:
+                show_hint()
+
+    buttons = ctk.CTkFrame(
+        challenge_card,
+        fg_color="transparent"
+    )
+
+    buttons.pack(
+        pady=(8, 5)
+    )
+
+    check_button = ctk.CTkButton(
+        buttons,
+        text="Check Answer",
+        command=check_answer,
+        width=190,
+        height=43,
+        corner_radius=13,
+        font=ctk.CTkFont(
+            size=15,
+            weight="bold"
+        )
+    )
+
+    check_button.pack(
+        side="left",
+        padx=7
+    )
+
+    hint_button = ctk.CTkButton(
+        buttons,
+        text="Need a Hint?",
+        command=show_hint,
+        width=170,
+        height=43,
+        corner_radius=13,
+        font=ctk.CTkFont(
+            size=15
+        )
+    )
+
+    hint_button.pack(
+        side="left",
+        padx=7
+    )
+
+    nav_frame = ctk.CTkFrame(
+        page,
+        fg_color="transparent"
+    )
+
+    nav_frame.pack(
+        pady=(0, 12)
+    )
+
+    retry_button = ctk.CTkButton(
+        nav_frame,
+        text="Run Ball Again",
+        command=show_ball_challenge,
+        width=180,
+        height=42,
+        corner_radius=13
+    )
+
+    retry_button.pack(
+        side="left",
+        padx=8
+    )
+
+    home_button = ctk.CTkButton(
+        nav_frame,
+        text="Back to Home",
+        command=show_home,
+        width=180,
+        height=42,
+        corner_radius=13
+    )
+
+    home_button.pack(
+        side="left",
+        padx=8
+    )
+
+    answer_entry.bind(
+        "<Return>",
+        lambda event: check_answer()
+    )
+
+    answer_entry.focus()
+
+
+def show_ball_error(
+    error_message
+):
+
+    clear_screen()
+
+    frame = ctk.CTkFrame(
+        app,
+        corner_radius=0
+    )
+
+    frame.pack(
+        fill="both",
+        expand=True
+    )
+
+    title = ctk.CTkLabel(
+        frame,
+        text="Ball Experiment Error",
+        font=ctk.CTkFont(
+            size=32,
+            weight="bold"
+        )
+    )
+
+    title.pack(
+        pady=(180, 20)
+    )
+
+    message = ctk.CTkLabel(
+        frame,
+        text=error_message,
+        font=ctk.CTkFont(
+            size=17
+        ),
+        wraplength=700
+    )
+
+    message.pack(
+        pady=10
+    )
+
+    buttons = ctk.CTkFrame(
+        frame,
+        fg_color="transparent"
+    )
+
+    buttons.pack(
+        pady=25
+    )
+
+    retry = ctk.CTkButton(
+        buttons,
+        text="Try Ball Lab Again",
+        command=show_ball_challenge,
+        width=190,
+        height=45
+    )
+
+    retry.pack(
+        side="left",
+        padx=8
+    )
+
+    home = ctk.CTkButton(
+        buttons,
+        text="Back to Home",
+        command=show_home,
+        width=180,
+        height=45
+    )
+
+    home.pack(
+        side="left",
+        padx=8
     )
 
 
