@@ -5,3 +5,5 @@ __pycache__/
 .DS_Store
 .env
 experiment_result.json
+app_backup.py
+ball_experiment_result.json
