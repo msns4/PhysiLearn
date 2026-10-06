@@ -12,7 +12,10 @@ import threading
 
 
 
-from ai_tutor import generate_tutor_feedback
+from ai_tutor import (
+    generate_tutor_feedback,
+    generate_ball_tutor_feedback,
+)
 
 
 
@@ -160,6 +163,54 @@ def parse_ai_sections(ai_feedback):
         sections["TRY NEXT"] = (
             "Repeat the experiment and try to make your motion "
             "even smoother."
+        )
+
+    return sections
+
+
+def parse_ball_ai_sections(ai_feedback):
+    """Split Ball Lab AI feedback into stable UI sections."""
+
+    sections = {
+        "WHAT HAPPENED": "",
+        "PHYSICS CONNECTION": "",
+        "TRY NEXT": "",
+    }
+
+    if not isinstance(ai_feedback, str):
+        ai_feedback = ""
+
+    current_section = None
+
+    for raw_line in ai_feedback.replace("\r\n", "\n").split("\n"):
+        line = raw_line.strip()
+        heading = line.upper()
+
+        if heading in sections:
+            current_section = heading
+            continue
+
+        if current_section and line:
+            if sections[current_section]:
+                sections[current_section] += "\n"
+            sections[current_section] += line
+
+    if not sections["WHAT HAPPENED"]:
+        sections["WHAT HAPPENED"] = (
+            ai_feedback.strip()
+            or "PhysiLearn analyzed your ball experiment successfully."
+        )
+
+    if not sections["PHYSICS CONNECTION"]:
+        sections["PHYSICS CONNECTION"] = (
+            "Average speed uses total distance divided by time: "
+            "v = d / t. Velocity uses displacement, so direction matters."
+        )
+
+    if not sections["TRY NEXT"]:
+        sections["TRY NEXT"] = (
+            "Try another roll and compare how changing the path changes "
+            "distance, displacement, and average velocity."
         )
 
     return sections
@@ -2765,8 +2816,13 @@ def show_ball_learning(
             feedback_label.configure(
                 text=(
                     "Correct! You calculated the speed using "
-                    "measurements from your own experiment."
+                    "measurements from your own experiment. "
+                    "Continue to the AI Physics Tutor for a personalized explanation."
                 )
+            )
+
+            ai_button.configure(
+                state="normal"
             )
 
             solution_label.configure(
@@ -2845,6 +2901,25 @@ def show_ball_learning(
         padx=7
     )
 
+    ai_button = ctk.CTkButton(
+        buttons,
+        text="Continue to AI Tutor",
+        command=lambda: show_ball_ai_loading(result_data),
+        width=210,
+        height=43,
+        corner_radius=13,
+        font=ctk.CTkFont(
+            size=15,
+            weight="bold"
+        ),
+        state="disabled"
+    )
+
+    ai_button.pack(
+        side="left",
+        padx=7
+    )
+
     nav_frame = ctk.CTkFrame(
         page,
         fg_color="transparent"
@@ -2888,6 +2963,325 @@ def show_ball_learning(
     )
 
     answer_entry.focus()
+
+
+def show_ball_ai_loading(result_data):
+
+    clear_screen()
+
+    loading_frame = ctk.CTkFrame(
+        app,
+        corner_radius=0
+    )
+
+    loading_frame.pack(
+        fill="both",
+        expand=True
+    )
+
+    title = ctk.CTkLabel(
+        loading_frame,
+        text="Connecting Your Experiment to Physics",
+        font=ctk.CTkFont(
+            size=36,
+            weight="bold"
+        )
+    )
+
+    title.pack(
+        pady=(205, 15)
+    )
+
+    message = ctk.CTkLabel(
+        loading_frame,
+        text=(
+            "AI Physics Tutor is explaining your real ball measurements...\n"
+            "The measurements themselves were calculated by OpenCV and physics code."
+        ),
+        font=ctk.CTkFont(
+            size=17
+        ),
+        justify="center"
+    )
+
+    message.pack(
+        pady=15
+    )
+
+    progress = ctk.CTkProgressBar(
+        loading_frame,
+        width=360,
+        mode="indeterminate"
+    )
+
+    progress.pack(
+        pady=25
+    )
+
+    progress.start()
+
+    thread = threading.Thread(
+        target=generate_ball_ai_result,
+        args=(result_data,),
+        daemon=True
+    )
+
+    thread.start()
+
+
+def generate_ball_ai_result(result_data):
+
+    try:
+        feedback = generate_ball_tutor_feedback(
+            distance=result_data.get("distance_traveled"),
+            motion_time=result_data.get("motion_time"),
+            displacement=result_data.get("horizontal_displacement"),
+            average_speed=result_data.get("average_speed"),
+            average_velocity=result_data.get("average_velocity"),
+            ball_size_variation=result_data.get(
+                "ball_size_variation_percent",
+                0.0
+            ),
+        )
+
+        result_data["ball_ai_feedback"] = feedback
+
+    except Exception as error:
+        print(
+            f"Ball AI Tutor error: {error}"
+        )
+
+        result_data["ball_ai_feedback"] = (
+            "WHAT HAPPENED\n"
+            "PhysiLearn measured your tennis-ball motion successfully.\n\n"
+            "PHYSICS CONNECTION\n"
+            "Average speed is total distance divided by time: v = d / t. "
+            "Velocity uses displacement, so direction matters.\n\n"
+            "TRY NEXT\n"
+            "Roll the ball back toward its starting point and compare "
+            "distance with displacement."
+        )
+
+    app.after(
+        0,
+        lambda: show_ball_ai_result(result_data)
+    )
+
+
+def show_ball_ai_result(result_data):
+
+    clear_screen()
+
+    distance = float(
+        result_data.get("distance_traveled", 0.0)
+    )
+    motion_time = float(
+        result_data.get("motion_time", 0.0)
+    )
+    displacement = float(
+        result_data.get("horizontal_displacement", 0.0)
+    )
+    average_speed = float(
+        result_data.get("average_speed", 0.0)
+    )
+    average_velocity = float(
+        result_data.get("average_velocity", 0.0)
+    )
+    size_variation = float(
+        result_data.get("ball_size_variation_percent", 0.0)
+    )
+
+    sections = parse_ball_ai_sections(
+        result_data.get(
+            "ball_ai_feedback",
+            ""
+        )
+    )
+
+    page = ctk.CTkFrame(
+        app,
+        corner_radius=0
+    )
+
+    page.pack(
+        fill="both",
+        expand=True
+    )
+
+    title = ctk.CTkLabel(
+        page,
+        text="AI Physics Tutor",
+        font=ctk.CTkFont(
+            size=36,
+            weight="bold"
+        )
+    )
+
+    title.pack(
+        pady=(24, 3)
+    )
+
+    subtitle = ctk.CTkLabel(
+        page,
+        text=(
+            "Personalized from the measurements in your tennis-ball experiment."
+        ),
+        font=ctk.CTkFont(
+            size=16
+        )
+    )
+
+    subtitle.pack(
+        pady=(0, 12)
+    )
+
+    metrics_frame = ctk.CTkFrame(
+        page,
+        fg_color="transparent"
+    )
+
+    metrics_frame.pack(
+        pady=(0, 10)
+    )
+
+    metric_values = [
+        ("DISTANCE", f"{distance:.3f} m"),
+        ("TIME", f"{motion_time:.3f} s"),
+        ("AVG SPEED", f"{average_speed:.3f} m/s"),
+        ("DISPLACEMENT", f"{displacement:+.3f} m"),
+    ]
+
+    for name, value in metric_values:
+        metric_card = ctk.CTkFrame(
+            metrics_frame,
+            width=205,
+            height=72,
+            corner_radius=14
+        )
+
+        metric_card.pack(
+            side="left",
+            padx=6
+        )
+
+        metric_card.pack_propagate(False)
+
+        ctk.CTkLabel(
+            metric_card,
+            text=name,
+            font=ctk.CTkFont(
+                size=11,
+                weight="bold"
+            )
+        ).pack(
+            pady=(9, 1)
+        )
+
+        ctk.CTkLabel(
+            metric_card,
+            text=value,
+            font=ctk.CTkFont(
+                size=19,
+                weight="bold"
+            )
+        ).pack()
+
+    tutor_card = ctk.CTkFrame(
+        page,
+        width=920,
+        height=445,
+        corner_radius=22
+    )
+
+    tutor_card.pack(
+        pady=5
+    )
+
+    tutor_card.pack_propagate(False)
+
+    section_specs = [
+        ("WHAT HAPPENED", sections["WHAT HAPPENED"]),
+        ("PHYSICS CONNECTION", sections["PHYSICS CONNECTION"]),
+        ("TRY NEXT", sections["TRY NEXT"]),
+    ]
+
+    for index, (heading, body) in enumerate(section_specs):
+        ctk.CTkLabel(
+            tutor_card,
+            text=heading,
+            font=ctk.CTkFont(
+                size=15,
+                weight="bold"
+            ),
+            anchor="w"
+        ).pack(
+            fill="x",
+            padx=40,
+            pady=((20 if index == 0 else 11), 3)
+        )
+
+        ctk.CTkLabel(
+            tutor_card,
+            text=body,
+            font=ctk.CTkFont(
+                size=14
+            ),
+            justify="left",
+            anchor="w",
+            wraplength=830
+        ).pack(
+            fill="x",
+            padx=40
+        )
+
+    note_text = (
+        f"Estimated camera-based measurements • Avg velocity: "
+        f"{average_velocity:+.3f} m/s • Ball-size variation: "
+        f"{size_variation:.1f}%"
+    )
+
+    ctk.CTkLabel(
+        page,
+        text=note_text,
+        font=ctk.CTkFont(
+            size=12
+        )
+    ).pack(
+        pady=(7, 6)
+    )
+
+    nav_frame = ctk.CTkFrame(
+        page,
+        fg_color="transparent"
+    )
+
+    nav_frame.pack(
+        pady=(0, 10)
+    )
+
+    ctk.CTkButton(
+        nav_frame,
+        text="Run Ball Again",
+        command=show_ball_challenge,
+        width=180,
+        height=42,
+        corner_radius=13
+    ).pack(
+        side="left",
+        padx=8
+    )
+
+    ctk.CTkButton(
+        nav_frame,
+        text="Back to Home",
+        command=show_home,
+        width=180,
+        height=42,
+        corner_radius=13
+    ).pack(
+        side="left",
+        padx=8
+    )
 
 
 def show_ball_error(
