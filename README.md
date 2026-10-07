@@ -722,7 +722,7 @@ The long-term idea is to turn ordinary objects and movements into interactive ph
 
 # Demo
 
-**Public 2–4 minute demo video:** Coming soon
+**Public 2–4 minute demo video:** https://youtu.be/XMBDcrJkKeU
 
 **ForgeHacks Devpost submission:** Coming soon
 
