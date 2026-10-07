@@ -724,7 +724,7 @@ The long-term idea is to turn ordinary objects and movements into interactive ph
 
 **Public 2–4 minute demo video:** https://youtu.be/XMBDcrJkKeU
 
-**ForgeHacks Devpost submission:** Coming soon
+**ForgeHacks Devpost submission:** https://devpost.com/software/physilearn
 
 ---
 
