@@ -1,9 +1,38 @@
+# Python and editors
 .venv/
+venv/
 __pycache__/
-*.pyc
+*.py[cod]
 .vscode/
+.idea/
 .DS_Store
+
+# Secrets and credentials
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local experiment data and generated charts
+experiments/
+comparisons/
 experiment_result.json
-app_backup.py
 ball_experiment_result.json
+toy_car_recording.json
+toy_car_motion_graphs*.png
+ramp_*.json
+ramp_*.png
+*_recording.json
+
+# Local install helpers, generated archives, and backups
+*.zip
+*.bak
+*.bak_*
+*.bak.*
+*_backup.py
+app_backup.py
+install_physilearn_*.py
+collect_physilearn_source.ps1
+__install_backups__/
+*.log

@@ -1,747 +1,122 @@
-# PhysiLearn
+# PhysiLearn — Webcam Physics Lab
 
-**Turn everyday motion into measurable physics.**
+**Turn everyday objects into physics experiments.**
 
-PhysiLearn is an interactive webcam-based physics learning application that turns a student's own movement and real-world objects into physics experiments.
+PhysiLearn is a desktop learning prototype that uses a webcam to measure motion, plots the recorded data, applies deterministic physics calculations, and offers an optional AI explanation grounded in the measurements. It is intended for hands-on physics exploration, not laboratory-grade metrology.
 
-Instead of receiving fictional values from a textbook, students generate their own measurements, solve a physics problem using those measurements, and receive an explanation based on what actually happened in their experiment.
+## EurekaDev update (October 2026)
 
-Built for the **AI + Education track at ForgeHacks 2026**.
+This repository originally hosted **PhysiLearn for ForgeHacks 2026** (Tennis Ball Physics and Constant Velocity Hand Challenge). This later **EurekaDev iteration** adds Object Physics Lab, Ramp Physics Lab, measurement calibration, comparisons of saved runs, and AI Motion Insight. The earlier work is acknowledged and preserved in the source.
 
----
-## Demo Preview
+### Main features
 
-### Choose a Physics Lab
+- **Object Physics Lab** — track a toy car, box, tennis ball, or another selected object; record distance, displacement, elapsed time, average speed and motion graphs. Optional ruler calibration makes `cm` and `cm/s` estimates available; otherwise values remain `px` and `px/s`.
+- **Ramp Physics Lab** — mark the slope direction, track a car down an incline, examine along-ramp displacement, speed estimates and plots. Values are currently in pixels unless otherwise supported by the implementation.
+- **AI Motion Insight** — four short explanations: **How It Moved**, **Why It Changed**, **Physics Behind It**, and **What We Learned**. The optional OpenAI API is used for narrative explanations only, not motion measurement or physics calculations. When AI is unavailable, the built-in local explanation is used.
+- **Motion Analysis, Formula Explorer and Physics Principle** — estimated motion intervals, path-vs-displacement concepts, average speed, and contextual physics laws. Uncertainty and possible tracking gaps are reported.
+- **Compare Experiments** — choose two saved Object Lab runs using a graphical interface; compare numerical results and plots in compatible units. The viewer keeps `px` and `cm` recordings separate.
+- **Classic Labs** — the original tennis-ball experiment and hand-motion challenge remain accessible for reference.
 
-![PhysiLearn Home](assets/home.png)
-
-### Learn From Your Own Tennis-Ball Experiment
-
-![Ball Experiment Result](assets/ball-result.png)
-
-### Personalized AI Physics Tutor
-
-![Ball AI Physics Tutor](assets/ball-ai-tutor.png)
-
-### Constant Velocity Hand Challenge
-
-![Hand Motion Challenge](assets/hand-result.png)
-
----
-
-
-## Quick Start
-
-Clone the repository and install the dependencies:
-
-```bash
-git clone https://github.com/msns4/PhysiLearn.git
-cd PhysiLearn
-
-pip install -r requirements.txt
-python app.py
-```
-
-For AI-powered coaching, create a `.env` file based on `.env.example`:
-
-```env
-FEATHERLESS_API_KEY=your_featherless_api_key_here
-```
-
-The API key is **optional**.
-
-Without a Featherless API key, PhysiLearn still runs both experiments and provides its built-in deterministic physics explanations.
-
----
-
-## What PhysiLearn Does
-
-PhysiLearn currently contains two interactive physics labs:
-
-### 1. Tennis Ball Physics Lab
-
-Students roll a real tennis ball across a table while PhysiLearn tracks it through the webcam.
-
-The application estimates:
-
-- Distance traveled
-- Motion time
-- Horizontal displacement
-- Average speed
-- Average horizontal velocity
-- Velocity over time
-- Acceleration over time
-
-The student then receives a physics problem generated from their own experiment:
+## How it works
 
 ```text
-v = d / t
+Webcam → OpenCV tracking → timestamped positions → Python physics calculations
+    → saved JSON + motion graphs → local explanation / optional OpenAI explanation
+    → compare calibrated or pixel-based recordings
 ```
 
-Instead of giving the answer immediately, PhysiLearn asks the student to calculate the average speed using the measured distance and time.
+Computer vision estimates positions. Python computes the metrics. The AI explains the results and should not be treated as a source of new measurements.
 
-After the student answers, PhysiLearn checks the result and explains the physics using the measurements from that specific experiment.
+## Getting started
 
----
-
-### 2. Constant Velocity Hand Challenge
-
-Students move their hand from left to right while the webcam tracks the motion.
-
-PhysiLearn analyzes:
-
-- Direction consistency
-- Velocity variation
-- Average acceleration
-
-The challenge asks the student to approximate **constant velocity**.
-
-A deterministic evaluator decides whether the attempt is:
-
-```text
-PASS
-```
-
-or
-
-```text
-TRY AGAIN
-```
-
-The result is based on fixed motion thresholds rather than an AI model.
-
-PhysiLearn then explains why the attempt passed or failed and gives the student a specific suggestion for the next attempt.
-
----
-
-## Why PhysiLearn?
-
-Physics is often taught using problems such as:
-
-> A ball travels 5 meters in 2 seconds. What is its average speed?
-
-The student can use the formula correctly without ever seeing what those numbers represent in the real world.
-
-PhysiLearn changes the process:
-
-```text
-Real motion
-    ↓
-Webcam
-    ↓
-Computer vision
-    ↓
-Measured physics data
-    ↓
-Student solves the problem
-    ↓
-Physics explanation
-    ↓
-Personalized AI coaching
-```
-
-The student's own experiment becomes the physics problem.
-
-This creates a stronger connection between formulas, measurements, and physical motion.
-
----
-
-## Who It Helps
-
-PhysiLearn is designed for students who want a more interactive way to understand physics concepts such as velocity, displacement, and acceleration.
-
-It could also help:
-
-- Schools with limited access to laboratory equipment
-- Teachers who want quick hands-on demonstrations
-- Students learning physics independently at home
-- Visual learners who benefit from connecting formulas to real motion
-
-A webcam, a computer, and an everyday object can become a small physics lab.
-
----
-
-# How the Tennis Ball Lab Works
-
-## 1. Ball Detection
-
-OpenCV processes webcam frames and detects the tennis ball using color segmentation and contour analysis.
-
-The tracker identifies the ball's approximate:
-
-```text
-x position
-y position
-radius
-```
-
-across video frames.
-
----
-
-## 2. Webcam Calibration
-
-PhysiLearn uses the approximate known diameter of a tennis ball:
-
-```text
-0.067 m
-```
-
-During calibration, the student holds the tennis ball still.
-
-PhysiLearn compares the known physical diameter with the ball's apparent diameter in pixels:
-
-```text
-meters_per_pixel =
-known_ball_diameter / measured_pixel_diameter
-```
-
-This provides an estimated scale for converting webcam movement into real-world distance.
-
----
-
-## 3. Motion Recording
-
-After calibration, PhysiLearn gives the student a short countdown and records the tennis ball's movement.
-
-The program stores tracked positions over time and removes periods where the ball is approximately stationary.
-
----
-
-## 4. Physics Calculations
-
-PhysiLearn calculates quantities such as:
-
-### Distance traveled
-
-The tracked motion between consecutive positions is added together.
-
-### Horizontal displacement
-
-```text
-displacement = final_x - initial_x
-```
-
-### Average speed
-
-```text
-average speed = total distance / total time
-```
-
-### Average horizontal velocity
-
-```text
-average velocity = horizontal displacement / total time
-```
-
-### Velocity and acceleration
-
-Velocity is estimated from changes in position over time.
-
-Acceleration is estimated from changes in velocity over time.
-
-PhysiLearn also produces position, velocity, and acceleration graphs after the experiment.
-
----
-
-## Example Ball Experiment
-
-A real experiment might produce:
-
-```text
-Distance traveled: 0.443 m
-Motion time: 3.169 s
-Horizontal displacement: +0.426 m
-```
-
-The student then calculates:
-
-```text
-v = d / t
-
-v = 0.443 / 3.169
-
-v ≈ 0.140 m/s
-```
-
-PhysiLearn checks the student's answer and explains how average speed differs from average velocity.
-
----
-
-# How the Hand Challenge Works
-
-PhysiLearn uses the **MediaPipe Hand Landmarker** to track the student's hand through webcam frames.
-
-The wrist landmark is used to estimate horizontal motion.
-
-The application then calculates motion statistics such as:
-
-```text
-Direction consistency
-Velocity variation
-Average acceleration
-```
-
-For the current constant-velocity challenge, the targets are:
-
-```text
-Direction consistency >= 85%
-Velocity variation < 0.25
-Average acceleration < 0.45
-```
-
-All three targets must be satisfied for a PASS.
-
-These measurements are relative webcam-motion values rather than laboratory-grade SI measurements.
-
----
-
-# How AI Is Used
-
-PhysiLearn deliberately separates **measurement**, **grading**, **physics logic**, and **AI coaching**.
-
-## Hand Motion Challenge
-
-MediaPipe detects the student's hand.
-
-Python then calculates the motion metrics and a deterministic evaluator decides whether the result is PASS or TRY AGAIN.
-
-Only after the result is decided can the verified measurements be sent to the AI tutor.
-
-The AI may add a short personalized coaching message based on those measurements.
-
-It does **not** decide the grade.
-
----
-
-## Tennis Ball Physics Lab
-
-OpenCV measures the tennis ball's motion.
-
-Python performs the physics calculations.
-
-The student solves the average-speed problem.
-
-PhysiLearn checks the student's answer deterministically and generates the core physics explanation in Python.
-
-After that, Featherless AI may provide an additional personalized coaching suggestion based on the verified experiment data.
-
----
-
-## AI Model
-
-PhysiLearn uses the Featherless API with:
-
-```text
-Qwen/Qwen2.5-7B-Instruct
-```
-
-The AI receives only verified experiment information and is used for educational coaching.
-
-### Important design principle
-
-**AI does not decide the measurements, grade, or physics result.**
-
-The deterministic physics system remains authoritative.
-
-This makes the educational feedback more reliable while still allowing the AI tutor to personalize its coaching.
-
----
-
-# AI and Computer Vision Pipeline
-
-## Tennis Ball Lab
-
-```text
-Webcam
-    ↓
-OpenCV tennis-ball detection
-    ↓
-Camera calibration
-    ↓
-Tracked positions over time
-    ↓
-Deterministic physics calculations
-    ↓
-Student solves v = d / t
-    ↓
-Deterministic answer check
-    ↓
-Deterministic physics explanation
-    ↓
-Featherless AI coaching
-```
-
-## Hand Challenge
-
-```text
-Webcam
-    ↓
-MediaPipe Hand Landmarker
-    ↓
-Tracked wrist positions
-    ↓
-Velocity / acceleration calculations
-    ↓
-Deterministic rule-based evaluator
-    ↓
-PASS / TRY AGAIN
-    ↓
-Deterministic physics explanation
-    ↓
-Featherless AI coaching
-```
-
----
-
-# Graceful AI Fallback
-
-PhysiLearn does not require an API key to function.
-
-If `FEATHERLESS_API_KEY` is unavailable:
-
-```text
-Computer vision still works
-Physics calculations still work
-Student answer checking still works
-PASS / TRY AGAIN evaluation still works
-Built-in physics explanations still work
-```
-
-Only the additional AI-generated coaching message is skipped.
-
-This behavior was tested using a fresh clone of the repository without a `.env` file.
-
----
-
-# Technology Stack
-
-### Python
-
-Main application and physics logic.
-
-### CustomTkinter
-
-Desktop graphical interface.
-
-### OpenCV
-
-Tennis-ball detection, image processing, and motion tracking.
-
-### MediaPipe
-
-Machine-learning-based hand landmark detection.
-
-### NumPy
-
-Numerical physics calculations and signal processing.
-
-### Matplotlib
-
-Position, velocity, and acceleration graphs.
-
-### Featherless AI
-
-Provides access to the Qwen2.5-7B-Instruct model for personalized educational coaching.
-
-### python-dotenv
-
-Loads the optional API key from `.env`.
-
----
-
-# Installation
-
-## Requirements
-
-PhysiLearn has been tested with:
-
-```text
-Python 3.12
-Windows 10 / Windows 11
-Webcam
-```
-
-Clone the repository:
-
-```bash
-git clone https://github.com/msns4/PhysiLearn.git
-cd PhysiLearn
-```
-
-Create a virtual environment:
-
-```bash
-python -m venv .venv
-```
-
-On Windows PowerShell:
+Recommended: **Windows 10/11, Python 3.12, a webcam**, and an ordinary object to track.
 
 ```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
-.\.venv\Scripts\Activate.ps1
+git clone https://github.com/msns4/PhysiLearn.git
+cd PhysiLearn
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe app_eureka.py
 ```
 
-Install the dependencies:
+**Launch `app_eureka.py` for the EurekaDev version.** Running `app.py` instead opens the older ForgeHacks interface.
 
-```bash
-pip install -r requirements.txt
+The legacy Hand Challenge needs `hand_landmarker.task` from the repository root. Other images used by the older interface are under `assets/`.
+
+### Optional OpenAI tutor
+
+The application can work without a cloud AI account. To enable the optional narrative tutor, create a local `.env` file (not committed to Git):
+
+```dotenv
+OPENAI_API_KEY=your_own_api_key
+PHYSILEARN_AI_MODEL=gpt-4o-mini
 ```
 
-Optional AI configuration:
+Use an account with access to the OpenAI API and a sufficient API balance. API usage may incur charges. Do **not** put secret keys in source code, screenshots, issues, or commits. A no-key configuration continues using the local physics explanation.
 
-Create:
+### Object Lab (with or without ruler)
+
+1. Launch Object Physics Lab and select an object.
+2. In the camera window, press `3` to calibrate against the **0 cm and 25 cm** marks of a real 25 cm ruler, kept on the same plane as the object. Or use pixel mode (`5`) without a ruler.
+3. Press `1` to select the object, then `4` to start and stop recording. Press `2` to exit/review.
+4. Review the graphs and click **Explain with AI** to view the optional interpretation, Motion Analysis, Formula Explorer and Physics Principle.
+
+### Ramp Lab
+
+1. Prepare a low, stable incline with the toy car visible throughout its motion.
+2. In Ramp Lab, press `3` to mark the direction of the slope, `1` to select the car and `4` to start/stop recording.
+3. Press `2` to leave the camera and review the saved results.
+4. The viewer supports `M` to toggle mirrored display and `F` for display mode. After flipping, remark the ramp and object.
+
+### Compare Experiments
+
+Open **Compare Experiments**, choose compatible `cm` or `px` recordings A and B, and click **Compare Selected Runs**. This shows distance, displacement, time, average speed and comparison graphs. It is a descriptive comparison: differing results do not prove what caused them.
+
+## Technology
+
+Python, OpenCV (`opencv-contrib-python`, including object trackers), CustomTkinter, NumPy, Matplotlib, Pillow, optional OpenAI API and python-dotenv. The classic Hand Challenge additionally uses MediaPipe.
+
+## Accuracy and responsible interpretation
+
+- Pixel distances are **not** centimeters. A real ruler in the same plane is needed for approximate centimeters; camera perspective, object height, lighting and tracking noise affect accuracy.
+- Occlusions, tracker jumps, and missing segments can underestimate path length or distort peak speed; results may warn about incomplete measurements.
+- Average speed uses total tracked path / elapsed time. Displacement is the straight-line separation between start and finish; returning toward the start may reduce displacement but does not by itself reduce average speed.
+- The project does not directly measure mass, force, or reliable SI acceleration; physics laws are presented as **conceptual explanations** rather than measured force estimates.
+- Physics Tutor may propose physical mechanisms such as friction or pushing, but those causes are hypotheses unless experimentally controlled and tested.
+- For fairness, comparisons in different units are intentionally disallowed.
+
+## Repository structure
 
 ```text
-.env
-```
-
-and add:
-
-```env
-FEATHERLESS_API_KEY=your_featherless_api_key_here
-```
-
-A safe example file is included:
-
-```text
+app_eureka.py                # EurekaDev desktop entry point
+object_physics_lab_v2.py     # Object motion tracking and calibration
+ramp_physics_lab_v2.py       # Ramp motion tracking
+physilearn_compare_gui.py   # Graphical experiment comparison
+compare_experiments.py      # Comparison calculations and plotting
+eureka_motion_analysis.py   # Motion intervals and formula cards
+eureka_motion_story.py      # Evidence-grounded four-part AI story
+eureka_physics_principle.py # Physics law concept cards
+eureka_ai_tutor.py          # Local physics summaries and OpenAI support
+app.py, main.py, ...        # Legacy ForgeHacks labs and utilities
+hand_landmarker.task        # MediaPipe model for classic hand lab
+assets/                     # Original screenshots and supporting assets
+requirements.txt
 .env.example
 ```
 
-The real `.env` file is excluded from Git through `.gitignore`.
+Runtime recordings in `experiments/`, plots in `comparisons/`, local `.env`, cache and backup files should not be committed.
 
----
+## Demo and submission
 
-# Running PhysiLearn
+- **ForgeHacks 2026**: previous version, available in the repository history; earlier submission at https://devpost.com/software/physilearn
+- **EurekaDev 2026**: expanded version. Add the EurekaDev video and submission URL here after recording and submission.
 
-Start the main application:
+## AI-assisted development disclosure
 
-```bash
-python app.py
-```
-
-You will see two available labs:
-
-```text
-Tennis Ball Physics
-Constant Velocity
-```
-
-Choose one and follow the instructions shown inside the application.
-
----
-
-# Tennis Ball Experiment Tips
-
-For better measurements:
-
-- Use a yellow or green tennis ball
-- Use a background without similarly colored objects
-- Keep the ball clearly visible to the webcam
-- Keep the tennis ball roughly the same distance from the camera
-- Hold the ball still during calibration
-- Roll the ball mostly left to right
-- Avoid moving the camera during the experiment
-
-PhysiLearn also reports **ball-size variation**.
-
-A lower variation generally means the ball remained at a more consistent distance from the webcam.
-
----
-
-# Project Structure
-
-```text
-PhysiLearn/
-│
-├── app.py
-│   Main CustomTkinter application and navigation
-│
-├── main.py
-│   Active hand-motion experiment and deterministic evaluator
-│
-├── ball_physics_test.py
-│   Active tennis-ball tracking and physics measurement pipeline
-│
-├── ai_tutor.py
-│   Deterministic explanations and optional Featherless AI coaching
-│
-├── hand_landmarker.task
-│   MediaPipe hand landmark model
-│
-├── requirements.txt
-│   Python dependencies
-│
-├── .env.example
-│   Example Featherless environment configuration
-│
-├── .gitignore
-│   Files excluded from Git
-│
-├── README.md
-│   Project documentation
-│
-└── experimental/
-    Earlier prototypes and development experiments
-```
-
-Runtime experiment JSON files are ignored by Git.
-
----
-
-# Limitations
-
-PhysiLearn is an educational prototype rather than a laboratory measurement instrument.
-
-### Webcam calibration
-
-The tennis-ball scale is estimated from the apparent size of the ball in the webcam.
-
-If the ball moves significantly closer to or farther from the camera, measurement accuracy decreases.
-
-### Tennis-ball detection
-
-Color-based detection can be affected by:
-
-```text
-Lighting
-Background colors
-Other yellow/green objects
-Motion blur
-```
-
-### Hand tracking
-
-MediaPipe tracking quality depends on:
-
-```text
-Lighting
-Hand visibility
-Camera angle
-Motion speed
-```
-
-### Measurements
-
-The project is intended to help students understand physics concepts.
-
-Measurements should be treated as **camera-based estimates**, not laboratory-grade values.
-
----
-
-# ForgeHacks 2026 Build Timeline
-
-PhysiLearn was substantially created during **ForgeHacks 2026**.
-
-## Before October 3
-
-No complete PhysiLearn application existed before the event.
-
-## Built During ForgeHacks
-
-During the hackathon, the project was developed into the current application, including:
-
-- Webcam-based constant-velocity hand challenge
-- MediaPipe hand tracking
-- Velocity and acceleration analysis
-- Deterministic PASS / TRY AGAIN evaluation
-- Physics explanations based on measured motion
-- Featherless-powered AI coaching
-- Tennis-ball detection with OpenCV
-- Webcam calibration using the approximate known diameter of a tennis ball
-- Distance, displacement, time, speed, velocity, and acceleration analysis
-- Position, velocity, and acceleration graphs
-- Student calculation challenge based on real experiment measurements
-- Deterministic Ball Lab physics explanations
-- Personalized Featherless coaching for the Ball Lab
-- Unified CustomTkinter interface containing both labs
-- Graceful no-API-key fallback
-- Documentation and repository organization
-
----
-
-# Development Tools Disclosure
-
-PhysiLearn was designed and developed during ForgeHacks with the help of AI-assisted programming tools.
-
-ChatGPT was used as a development assistant for tasks such as:
-
-```text
-Debugging
-Explaining errors
-Reviewing code
-Planning implementation steps
-Improving documentation
-```
-
-The project logic, experiments, testing, integration decisions, and final implementation were developed and tested as part of the hackathon project.
-
-Third-party libraries and models used by the application are identified in this README and in `requirements.txt`.
-
----
-
-# What I Learned
-
-Building PhysiLearn required combining several areas that are normally taught separately:
-
-```text
-Computer vision
-Physics
-Machine learning
-Software engineering
-AI interaction design
-```
-
-One of the most important design lessons was that AI does not need to control every part of an AI-powered application.
-
-For measurements and grading, deterministic logic is often more reliable.
-
-AI becomes more useful after those reliable results exist, where it can help explain them in a personalized and understandable way.
-
----
-
-# Future Work
-
-Possible future improvements include:
-
-- Additional object-tracking experiments
-- Projectile-motion experiments
-- Free-fall experiments
-- Multiple object types
-- Improved depth and distance estimation
-- More physics challenges
-- Student progress tracking
-- Teacher dashboards
-- Additional AI-generated experiment suggestions
-- Improved automatic calibration
-- Cross-platform testing
-
-The long-term idea is to turn ordinary objects and movements into interactive physics lessons using only a webcam.
-
----
-
-# Demo
-
-**Public 2–4 minute demo video:** https://youtu.be/XMBDcrJkKeU
-
-**ForgeHacks Devpost submission:** https://devpost.com/software/physilearn
-
----
-
-# ForgeHacks 2026
-
-**Track:** AI + Education
-
-PhysiLearn explores how computer vision, deterministic physics, and AI tutoring can work together to make physics more interactive and connected to the real world.
-
----
+The author used ChatGPT for development support including debugging, code generation and patches, interface iteration, and documentation. The project was developed and tested interactively with real webcam experiments. Core physics metrics are calculated by Python rather than by a generative model. Earlier ForgeHacks code was reused and expanded for EurekaDev; this prior work is disclosed rather than presented as newly authored from scratch.
 
 ## Author
 
-**Mansur Gapar**
-
 GitHub: [msns4](https://github.com/msns4)
 
----
-
-> **PhysiLearn — turn everyday motion into measurable physics.**
+**PhysiLearn — turn everyday motion into measurable physics.**
